@@ -1,8 +1,8 @@
 package com.enviro365.data_processor.services;
 
 import com.enviro365.data_processor.exceptions.FileProcessingException;
-import com.enviro365.data_processor.models.File;
-import com.enviro365.data_processor.repositories.FileRepository;
+import com.enviro365.data_processor.models.FileData;
+import com.enviro365.data_processor.repositories.FileDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,12 +13,12 @@ import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 @Service
-public class FileService {
+public class FileDataService {
     @Autowired
-    private FileRepository fileDataRepository;
+    private FileDataRepository fileDataRepository;
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 
-    public File processFile(MultipartFile file) throws IOException {
+    public FileData processFile(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new FileProcessingException("File is empty");
         }
@@ -34,7 +34,7 @@ public class FileService {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String content = br.lines().collect(Collectors.joining("\n"));
             content = content.replace("\n", ". ");
-            File fileData = new File();
+            FileData fileData = new FileData();
             fileData.setFileName(file.getOriginalFilename());
             fileData.setProcessedData(content);
             return fileDataRepository.save(fileData);
@@ -43,7 +43,7 @@ public class FileService {
         }
     }
 
-    public File getFileDataById(Long id) {
+    public FileData getFileDataById(Long id) {
         return fileDataRepository.findById(id).orElse(null);
     }
 }

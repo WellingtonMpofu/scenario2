@@ -1,7 +1,7 @@
 package com.enviro365.data_processor.controllers;
 
-import com.enviro365.data_processor.models.File;
-import com.enviro365.data_processor.services.FileService;
+import com.enviro365.data_processor.models.FileData;
+import com.enviro365.data_processor.services.FileDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,12 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1")
-public class FileController {
+public class FileDataController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileDataController.class);
 
     @Autowired
-    private FileService fileService;
+    private FileDataService fileDataService;
 
     @PostMapping("/upload")
     @Operation(
@@ -36,7 +36,7 @@ public class FileController {
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             logger.info("Received file upload request: {}", file.getOriginalFilename());
-            File fileData = fileService.processFile(file);
+            FileData fileData = fileDataService.processFile(file);
             logger.info("File processed successfully: {}", fileData.getId());
             return ResponseEntity.ok(fileData);
         } catch (Exception e) {
@@ -45,12 +45,12 @@ public class FileController {
         }
     }
 
-    @GetMapping("/data/{id}")
+    @GetMapping("/file-data/{id}")
     @Operation(summary = "Retrieve processed file data", description = "Retrieves the processed data for the file with the specified ID")
     public ResponseEntity<?> getFileData(@PathVariable Long id) {
         try {
             logger.info("Received request to retrieve data for file ID: {}", id);
-            File fileData = fileService.getFileDataById(id);
+            FileData fileData = fileDataService.getFileDataById(id);
             logger.info("Data retrieved successfully for file ID: {}", id);
             return ResponseEntity.ok(fileData);
         } catch (Exception e) {
