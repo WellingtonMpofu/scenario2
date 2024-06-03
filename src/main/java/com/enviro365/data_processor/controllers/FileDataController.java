@@ -45,7 +45,7 @@ public class FileDataController {
         }
     }
 
-    @GetMapping("/file-data/{id}")
+    @GetMapping("/data/{id}")
     @Operation(summary = "Retrieve processed file data", description = "Retrieves the processed data for the file with the specified ID")
     public ResponseEntity<?> getFileData(@PathVariable Long id) {
         try {
